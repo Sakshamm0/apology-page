@@ -5,48 +5,206 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>For You...</title>
     <style>
+        :root {
+          --bg1: #0f1020;
+          --bg2: #1b1f3a;
+          --accent: #ff5d8f;
+          --accent-2: #ffd166;
+          --text: #fff7fb;
+        }
+
+        * {
+          box-sizing: border-box;
+        }
+
         body {
-          background-color: #1a1a1a;
-          color: white;
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          height: 100vh;
+          min-height: 100vh;
           margin: 0;
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          color: var(--text);
+          display: grid;
+          place-items: center;
+          overflow: hidden;
+          background:
+            radial-gradient(circle at top, rgba(255, 93, 143, 0.22), transparent 36%),
+            radial-gradient(circle at bottom right, rgba(255, 209, 102, 0.16), transparent 28%),
+            linear-gradient(135deg, var(--bg1), var(--bg2));
+        }
+
+        body::before,
+        body::after {
+          content: "";
+          position: absolute;
+          inset: -20%;
+          background: radial-gradient(circle, rgba(255,255,255,0.14) 0 2px, transparent 3px) 0 0 / 70px 70px;
+          animation: drift 40s linear infinite;
+          pointer-events: none;
+          opacity: 0.35;
+        }
+
+        body::after {
+          animation-duration: 60s;
+          transform: rotate(10deg);
+          opacity: 0.2;
+        }
+
+        .card {
+          position: relative;
+          width: min(92vw, 720px);
+          padding: 44px 28px;
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          border-radius: 28px;
+          background: rgba(15, 16, 32, 0.58);
+          backdrop-filter: blur(14px);
+          box-shadow: 0 18px 60px rgba(0, 0, 0, 0.38);
           text-align: center;
         }
+
+        .badge {
+          display: inline-block;
+          margin-bottom: 18px;
+          padding: 8px 14px;
+          border-radius: 999px;
+          background: rgba(255, 93, 143, 0.14);
+          color: #ffd6e3;
+          font-size: 0.9rem;
+          letter-spacing: 0.04em;
+        }
+
+        h1 {
+          margin: 0 0 12px;
+          font-size: clamp(2.2rem, 6vw, 4.3rem);
+          line-height: 1;
+          color: #fff;
+          text-shadow: 0 8px 30px rgba(255, 93, 143, 0.35);
+        }
+
+        .subtitle {
+          margin: 0 auto 26px;
+          max-width: 48ch;
+          font-size: clamp(1rem, 2vw, 1.15rem);
+          color: rgba(255, 247, 251, 0.84);
+        }
+
+        #startBtn {
+          padding: 16px 28px;
+          border: none;
+          border-radius: 999px;
+          background: linear-gradient(135deg, var(--accent), #ff8fab);
+          color: white;
+          font-size: 1rem;
+          font-weight: 700;
+          cursor: pointer;
+          box-shadow: 0 12px 30px rgba(255, 93, 143, 0.3);
+          transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+        }
+
+        #startBtn:hover {
+          transform: translateY(-2px) scale(1.03);
+          filter: brightness(1.05);
+          box-shadow: 0 16px 36px rgba(255, 93, 143, 0.38);
+        }
+
+        #startBtn:active {
+          transform: translateY(0) scale(0.99);
+        }
+
         #messageBox {
           display: none;
           opacity: 0;
-          transition: opacity 2s ease-in;
-          padding: 20px;
+          margin-top: 26px;
+          padding: 24px;
+          border-radius: 22px;
+          background: rgba(255, 255, 255, 0.06);
+          border: 1px solid rgba(255, 255, 255, 0.09);
+          transition: opacity 1.6s ease-in;
         }
-        button {
-          padding: 15px 30px;
-          font-size: 18px;
-          border: none;
-          border-radius: 25px;
-          background-color: #ff4757;
-          color: white;
-          cursor: pointer;
-          transition: transform 0.2s;
+
+        #messageBox p {
+          margin: 12px 0;
+          font-size: 1.05rem;
+          line-height: 1.7;
         }
-        button:hover {
-          transform: scale(1.05);
+
+        #statusText {
+          min-height: 1.2em;
+          margin-top: 14px;
+          font-size: 0.95rem;
+          color: rgba(255, 247, 251, 0.72);
         }
-        h1 { color: #ff4757; }
+
+        .hearts {
+          position: absolute;
+          inset: 0;
+          overflow: hidden;
+          pointer-events: none;
+        }
+
+        .heart {
+          position: absolute;
+          bottom: -30px;
+          color: rgba(255, 255, 255, 0.14);
+          font-size: 1.5rem;
+          animation: floatUp linear infinite;
+        }
+
+        .heart:nth-child(1) { left: 8%; animation-duration: 16s; animation-delay: 0s; }
+        .heart:nth-child(2) { left: 18%; animation-duration: 18s; animation-delay: 2s; }
+        .heart:nth-child(3) { left: 72%; animation-duration: 20s; animation-delay: 1s; }
+        .heart:nth-child(4) { left: 84%; animation-duration: 17s; animation-delay: 4s; }
+        .heart:nth-child(5) { left: 48%; animation-duration: 19s; animation-delay: 3s; }
+
+        @keyframes floatUp {
+          from {
+            transform: translateY(0) scale(0.9);
+            opacity: 0;
+          }
+          10% { opacity: 1; }
+          to {
+            transform: translateY(-120vh) scale(1.5) rotate(18deg);
+            opacity: 0;
+          }
+        }
+
+        @keyframes drift {
+          from { transform: translate3d(0, 0, 0); }
+          to { transform: translate3d(8%, 6%, 0); }
+        }
+
+        @media (max-width: 520px) {
+          .card {
+            padding: 32px 18px;
+            border-radius: 22px;
+          }
+
+          #messageBox {
+            padding: 18px;
+          }
+        }
     </style>
 </head>
 <body>
 
-<button id="startBtn">I have something to say. Click here.</button>
-
-<div id="messageBox">
+<main class="card">
+    <div class="badge">A small note, with a song</div>
     <h1>I am so sorry.</h1>
-    <p>I know I messed up, and I hate seeing you angry with me.</p>
-    <p>You mean a lot to me. Can you find it in your heart to forgive me?</p>
+    <p class="subtitle">I made a mistake, and this is my way of saying I care enough to try again.</p>
+
+    <button id="startBtn">Open my message</button>
+
+    <div id="messageBox">
+        <p>I know I messed up, and I hate seeing you angry with me.</p>
+        <p>You mean a lot to me. Can you find it in your heart to forgive me?</p>
+        <p id="statusText"></p>
+    </div>
+</main>
+
+<div class="hearts" aria-hidden="true">
+    <span class="heart">❤</span>
+    <span class="heart">❤</span>
+    <span class="heart">❤</span>
+    <span class="heart">❤</span>
+    <span class="heart">❤</span>
 </div>
 
 <!-- Ensure your music file is in the same folder and named music.mpeg -->
@@ -56,38 +214,42 @@
     const btn = document.getElementById('startBtn');
     const messageBox = document.getElementById('messageBox');
     const music = document.getElementById('bgMusic');
+    const statusText = document.getElementById('statusText');
 
     btn.addEventListener('click', async () => {
-      if (music.readyState < 1) {
-        await new Promise((resolve, reject) => {
-          const onLoaded = () => {
-            music.removeEventListener('loadedmetadata', onLoaded);
-            music.removeEventListener('error', onError);
-            resolve();
-          };
-
-          const onError = () => {
-            music.removeEventListener('loadedmetadata', onLoaded);
-            music.removeEventListener('error', onError);
-            reject(new Error('Unable to load the audio file.'));
-          };
-
-          music.addEventListener('loadedmetadata', onLoaded);
-          music.addEventListener('error', onError);
-        });
-      }
-
-      music.currentTime = 115;
-      await music.play();
-
-      // Hide button and fade in the message
+      btn.disabled = true;
       btn.style.display = 'none';
       messageBox.style.display = 'block';
-
-      // Slight delay to allow display:block to apply before changing opacity for the fade effect
       setTimeout(() => {
         messageBox.style.opacity = '1';
       }, 100);
+
+      statusText.textContent = 'Starting the song...';
+
+      try {
+        music.preload = 'auto';
+        music.load();
+
+        if (music.readyState < 1) {
+          await new Promise((resolve) => {
+            const timer = setTimeout(resolve, 2500);
+            music.addEventListener('loadedmetadata', () => {
+              clearTimeout(timer);
+              resolve();
+            }, { once: true });
+            music.addEventListener('error', () => {
+              clearTimeout(timer);
+              resolve();
+            }, { once: true });
+          });
+        }
+
+        music.currentTime = 115;
+        await music.play();
+        statusText.textContent = 'Playing from 01:55.';
+      } catch (error) {
+        statusText.textContent = 'The message is open, but the audio could not start.';
+      }
     });
 </script>
 </body>
