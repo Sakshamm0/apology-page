@@ -49,17 +49,36 @@
     <p>You mean a lot to me. Can you find it in your heart to forgive me?</p>
 </div>
 
-<!-- Ensure your music file is in the same folder and named music.mp3 -->
-<audio id="bgMusic" src="music.mp3" loop></audio>
+<!-- Ensure your music file is in the same folder and named music.mpeg -->
+<audio id="bgMusic" src="music.mpeg" loop></audio>
 
 <script>
     const btn = document.getElementById('startBtn');
     const messageBox = document.getElementById('messageBox');
     const music = document.getElementById('bgMusic');
 
-    btn.addEventListener('click', () => {
-      // Play the music
-      music.play();
+    btn.addEventListener('click', async () => {
+      if (music.readyState < 1) {
+        await new Promise((resolve, reject) => {
+          const onLoaded = () => {
+            music.removeEventListener('loadedmetadata', onLoaded);
+            music.removeEventListener('error', onError);
+            resolve();
+          };
+
+          const onError = () => {
+            music.removeEventListener('loadedmetadata', onLoaded);
+            music.removeEventListener('error', onError);
+            reject(new Error('Unable to load the audio file.'));
+          };
+
+          music.addEventListener('loadedmetadata', onLoaded);
+          music.addEventListener('error', onError);
+        });
+      }
+
+      music.currentTime = 115;
+      await music.play();
 
       // Hide button and fade in the message
       btn.style.display = 'none';
