@@ -133,6 +133,21 @@
           color: rgba(255, 247, 251, 0.72);
         }
 
+        #musicBtn {
+          display: none;
+          margin-top: 14px;
+          padding: 12px 20px;
+          border: 1px solid rgba(255, 255, 255, 0.18);
+          border-radius: 999px;
+          background: rgba(255, 255, 255, 0.08);
+          color: #fff;
+          cursor: pointer;
+        }
+
+        #musicBtn:hover {
+          background: rgba(255, 255, 255, 0.14);
+        }
+
         .hearts {
           position: absolute;
           inset: 0;
@@ -187,15 +202,16 @@
 
 <main class="card">
     <div class="badge">A small note, with a song</div>
-    <h1>I am so sorry.</h1>
-    <p class="subtitle">I made a mistake, and this is my way of saying I care enough to try again.</p>
+    <h1>I am so sorry yr</h1>
+    <p class="subtitle">Hamara khud ka bhot mann tha yr aane ka pr patani bhai kaise tabiyat kharab hogayi....</p>
 
     <button id="startBtn" type="button" onclick="startExperience()">Open my message</button>
 
     <div id="messageBox">
-        <p>I know I messed up, and I hate seeing you angry with me.</p>
-        <p>You mean a lot to me. Can you find it in your heart to forgive me?</p>
+        <p>Tune hamare liye 3 din ka kara orr hum 1 hi din aa paye</p>
+        <p>Really Sorry bhai</p>
         <p id="statusText"></p>
+        <button id="musicBtn" type="button" onclick="playMusic()">Play music</button>
     </div>
 </main>
 
@@ -208,13 +224,16 @@
 </div>
 
 <!-- Audio file is an MP3 copy of the original track for broad browser support -->
-<audio id="bgMusic" src="music.mp3" loop></audio>
+<audio id="bgMusic" preload="auto" loop>
+    <source src="music.mp3" type="audio/mpeg">
+</audio>
 
 <script>
     const btn = document.getElementById('startBtn');
     const messageBox = document.getElementById('messageBox');
     const music = document.getElementById('bgMusic');
     const statusText = document.getElementById('statusText');
+    const musicBtn = document.getElementById('musicBtn');
 
     function startExperience() {
       if (btn.disabled) return;
@@ -228,23 +247,24 @@
         messageBox.style.opacity = '1';
       });
 
+      playMusic();
+    }
+
+    function playMusic() {
       statusText.textContent = 'Starting the song...';
-      music.preload = 'auto';
-      music.load();
+      musicBtn.style.display = 'none';
 
-      const startAtTimestamp = () => {
-        try {
+      try {
+        if (music.readyState >= 1) {
           music.currentTime = 115;
-        } catch (error) {
-          // If the browser is still buffering, keep going; playback can still begin.
+        } else {
+          music.addEventListener('loadedmetadata', () => {
+            try {
+              music.currentTime = 115;
+            } catch (error) {}
+          }, { once: true });
         }
-      };
-
-      if (music.readyState >= 1) {
-        startAtTimestamp();
-      } else {
-        music.addEventListener('loadedmetadata', startAtTimestamp, { once: true });
-      }
+      } catch (error) {}
 
       const playback = music.play();
       if (playback && typeof playback.catch === 'function') {
@@ -253,7 +273,8 @@
             statusText.textContent = 'Playing from 01:55.';
           })
           .catch(() => {
-            statusText.textContent = 'The message is open, but the audio could not start.';
+            statusText.textContent = 'Tap play music to start the song.';
+            musicBtn.style.display = 'inline-block';
           });
       } else {
         statusText.textContent = 'Playing from 01:55.';
