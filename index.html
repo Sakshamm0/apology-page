@@ -234,6 +234,7 @@
     const music = document.getElementById('bgMusic');
     const statusText = document.getElementById('statusText');
     const musicBtn = document.getElementById('musicBtn');
+    const songStartTime = 114; // adjust by 1 second if you want the lyric to begin earlier/later
 
     function startExperience() {
       if (btn.disabled) return;
@@ -256,11 +257,11 @@
 
       try {
         if (music.readyState >= 1) {
-          music.currentTime = 115;
+          music.currentTime = songStartTime;
         } else {
           music.addEventListener('loadedmetadata', () => {
             try {
-              music.currentTime = 115;
+              music.currentTime = songStartTime;
             } catch (error) {}
           }, { once: true });
         }
@@ -270,14 +271,14 @@
       if (playback && typeof playback.catch === 'function') {
         playback
           .then(() => {
-            statusText.textContent = 'Playing from 01:55.';
+            statusText.textContent = '';
           })
           .catch(() => {
             statusText.textContent = 'Tap play music to start the song.';
             musicBtn.style.display = 'inline-block';
           });
       } else {
-        statusText.textContent = 'Playing from 01:55.';
+        statusText.textContent = '';
       }
     }
 </script>
