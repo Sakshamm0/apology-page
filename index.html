@@ -203,13 +203,13 @@
 <main class="card">
     <div class="badge">A small note, with a song</div>
     <h1>I am so sorry yr</h1>
-    <p class="subtitle">Hamara khud ka bhot mann tha yr aane ka pr patani bhai kaise tabiyat kharab hogayi....</p>
+    <p class="subtitle">Hamara khud ka bhot mann tha aane ka par patani kaise tabiyat kharab hogayi...</p>
 
     <button id="startBtn" type="button" onclick="startExperience()">Open my message</button>
 
     <div id="messageBox">
         <p>Tune hamare liye 3 din ka kara orr hum 1 hi din aa paye</p>
-        <p>Really Sorry bhai</p>
+        <p>Really Sorry bhai 😔</p>
         <p id="statusText"></p>
         <button id="musicBtn" type="button" onclick="playMusic()">Play music</button>
     </div>
@@ -234,7 +234,7 @@
     const music = document.getElementById('bgMusic');
     const statusText = document.getElementById('statusText');
     const musicBtn = document.getElementById('musicBtn');
-    const songStartTime = 114; // adjust by 1 second if you want the lyric to begin earlier/later
+    const songStartTime = 116.5; // nudge this by 0.5-1s if the lyric feels early/late
 
     function startExperience() {
       if (btn.disabled) return;
