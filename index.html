@@ -251,34 +251,36 @@
       playMusic();
     }
 
-    function playMusic() {
+    async function playMusic() {
       statusText.textContent = 'Starting the song...';
       musicBtn.style.display = 'none';
 
       try {
-        if (music.readyState >= 1) {
-          music.currentTime = songStartTime;
-        } else {
-          music.addEventListener('loadedmetadata', () => {
-            try {
-              music.currentTime = songStartTime;
-            } catch (error) {}
-          }, { once: true });
-        }
-      } catch (error) {}
+        music.pause();
+        music.currentTime = 0;
+        music.load();
 
-      const playback = music.play();
-      if (playback && typeof playback.catch === 'function') {
-        playback
-          .then(() => {
-            statusText.textContent = '';
-          })
-          .catch(() => {
-            statusText.textContent = 'Tap play music to start the song.';
-            musicBtn.style.display = 'inline-block';
+        if (music.readyState < 1) {
+          await new Promise((resolve) => {
+            music.addEventListener('loadedmetadata', resolve, { once: true });
+            music.addEventListener('error', resolve, { once: true });
           });
-      } else {
+        }
+
+        const targetTime = Math.max(0, Math.min(songStartTime, Math.max(0, music.duration - 0.1)));
+        music.currentTime = targetTime;
+
+        if (Math.abs(music.currentTime - targetTime) > 0.25) {
+          await new Promise((resolve) => {
+            music.addEventListener('seeked', resolve, { once: true });
+          });
+        }
+
+        await music.play();
         statusText.textContent = '';
+      } catch (error) {
+        statusText.textContent = 'Tap play music to start the song.';
+        musicBtn.style.display = 'inline-block';
       }
     }
 </script>
